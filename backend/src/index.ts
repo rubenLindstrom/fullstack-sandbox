@@ -1,24 +1,17 @@
-import express, { Request, Response } from "express";
-const cors = require("cors");
-const bodyParser = require("body-parser");
+import express from "express";
+import cors from "cors";
+import { errorHandler } from "./middleware";
 
-const api = require("./routes");
-import { HttpException } from "./util";
+import api from "./routes";
 
 const app = express();
 
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.use("/api", api);
-
-app.use((error: HttpException, req: Request, res: Response, next: any) => {
-  if (!error.status) {
-    error.status = 500;
-  }
-  res.status(error.status).json({ error: error.message });
-});
+app.use(errorHandler);
 
 const PORT = process.env.port || 3001;
 app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`));

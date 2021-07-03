@@ -8,3 +8,9 @@ export class HttpException extends Error {
     this.message = message;
   }
 }
+
+export class NotFoundError extends HttpException {
+  constructor() {
+    super(404, "List or item not found");
+  }
+}
