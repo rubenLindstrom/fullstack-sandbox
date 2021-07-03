@@ -1,12 +1,12 @@
 const cors = require("cors");
 import express from "express";
+const api = require("./routes");
 
 const app = express();
 
 app.use(cors());
 
-const PORT = 3001;
+app.use("/api", api);
 
-app.get("/", (req, res) => res.send("Hello World!"));
-
+const PORT = process.env.port || 3001;
 app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`));
