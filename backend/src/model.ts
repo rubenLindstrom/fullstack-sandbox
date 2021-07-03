@@ -51,6 +51,20 @@ class Model {
       ),
     };
   }
+
+  deleteItem(listId: string, itemId: string) {
+    const list = DB[listId];
+    const item = list?.todos.find((item) => item._id === itemId);
+
+    if (!item) {
+      throw new NotFoundError();
+    }
+
+    DB[listId] = {
+      ...list,
+      todos: list.todos.filter((todo) => todo._id !== itemId),
+    };
+  }
 }
 
 const model = new Model();

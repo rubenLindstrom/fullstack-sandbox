@@ -49,4 +49,19 @@ router.patch("/:listId/:itemId", (req, res, next) => {
   }
 });
 
+router.delete("/:listId/:itemId", (req, res, next) => {
+  const { listId, itemId } = req.params;
+
+  if (!listId || !itemId) {
+    return next(new HttpException(400, "Invalid IDs supplied"));
+  }
+
+  try {
+    model.deleteItem(listId, itemId);
+    res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
+});
+
 export default router;
