@@ -83,7 +83,7 @@ export const ToDoListForm: React.FC<Props> = ({ toDoList, saveToDoList }) => {
                   onChange={(e) =>
                     toggleItemCompletion(item._id, e.target.checked)
                   }
-                  value={item.completed}
+                  checked={item.completed}
                   icon={<CheckCircleOutlineIcon />}
                   checkedIcon={<CheckCircleIcon />}
                   className={classes.checkbox}
