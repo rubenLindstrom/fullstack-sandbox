@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddIcon from "@material-ui/icons/Add";
+import { v4 as uuidv4 } from "uuid";
 
 const useStyles = makeStyles({
   card: {
@@ -43,7 +44,7 @@ export const ToDoListForm: React.FC<Props> = ({ toDoList, saveToDoList }) => {
 
   const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    saveToDoList(toDoList._id, { todos });
+    saveToDoList(toDoList._id, todos);
   };
 
   return (
@@ -96,7 +97,7 @@ export const ToDoListForm: React.FC<Props> = ({ toDoList, saveToDoList }) => {
                 setTodos([
                   ...todos,
                   {
-                    _id: "",
+                    _id: uuidv4(),
                     name: "",
                   },
                 ]);

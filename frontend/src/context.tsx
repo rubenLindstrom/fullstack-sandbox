@@ -1,40 +1,35 @@
 import React from "react";
+import api from "./api";
 
 type State = {
-  todoLists: TodoCollection | null;
-  selectedListId: keyof TodoCollection;
+  todoLists: TodoCollection;
+  activeListId: keyof TodoCollection;
+  loading: Boolean;
 };
 
-const initialState = {
-  todoLists: null,
-  selectedListId: "",
+type Handlers = {
+  saveTodoList: (listId: string, items: TodoItem[]) => void;
+  setActiveList: (listId: string) => void;
 };
-
-const TodoContext = React.createContext<State | { dispatch: Function }>(
-  initialState
-);
 
 enum ActionTypes {
-  ADD_ITEM,
-  UPDATE_ITEM,
-  DELETE_ITEM,
-  SELECT_LIST,
+  SET_TODOS = "SET_TODOS",
+  SAVE_LIST = "SAVE_LIST",
+  SELECT_LIST = "SELECT_LIST",
 }
 
 type Action =
   | {
-      type: ActionTypes.ADD_ITEM;
-    }
-  | {
-      type: ActionTypes.UPDATE_ITEM;
+      type: ActionTypes.SET_TODOS;
       payload: {
-        newItem: Partial<TodoItem>;
+        collection: TodoCollection;
       };
     }
   | {
-      type: ActionTypes.DELETE_ITEM;
+      type: ActionTypes.SAVE_LIST;
       payload: {
-        itemId: string;
+        listId: string;
+        items: TodoItem[];
       };
     }
   | {
@@ -44,16 +39,46 @@ type Action =
       };
     };
 
+const initialState: State = {
+  todoLists: {},
+  activeListId: "",
+  loading: true,
+};
+
+const initialHandlers = {
+  saveTodoList: (id: string, items: TodoItem[]) => {},
+  setActiveList: (listId: string) => {},
+};
+
+const TodoContext = React.createContext<State & Handlers>({
+  ...initialState,
+  ...initialHandlers,
+});
+
 const reducer = (state: State = initialState, action: Action) => {
   switch (action.type) {
-    case ActionTypes.ADD_ITEM:
-      return state;
-    case ActionTypes.DELETE_ITEM:
-      return state;
-    case ActionTypes.DELETE_ITEM:
-      return state;
+    case ActionTypes.SET_TODOS:
+      return {
+        ...state,
+        todoLists: action.payload.collection,
+        loading: false,
+      };
+    case ActionTypes.SAVE_LIST:
+      return {
+        ...state,
+        todoLists: {
+          ...state.todoLists,
+          [action.payload.listId]: {
+            ...(state.todoLists?.[action.payload.listId] || {}),
+            todos: action.payload.items,
+          },
+        },
+      };
     case ActionTypes.SELECT_LIST:
-      return state;
+      return {
+        ...state,
+        activeListId: action.payload.listId,
+      };
     default:
       return state;
   }
@@ -62,8 +87,40 @@ const reducer = (state: State = initialState, action: Action) => {
 export const TodoContextProvider: React.FC = ({ children }) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
+  React.useEffect(() => {
+    api.getTodos().then((collection) => {
+      dispatch({
+        type: ActionTypes.SET_TODOS,
+        payload: {
+          collection,
+        },
+      });
+    });
+  }, []);
+
+  React.useEffect(() => {
+    console.log(state);
+  }, [state]);
+
+  const saveTodoList = (listId: string, items: TodoItem[]) =>
+    dispatch({
+      type: ActionTypes.SAVE_LIST,
+      payload: {
+        listId,
+        items,
+      },
+    });
+
+  const setActiveList = (listId: string) =>
+    dispatch({
+      type: ActionTypes.SELECT_LIST,
+      payload: {
+        listId,
+      },
+    });
+
   return (
-    <TodoContext.Provider value={{ ...state, dispatch }}>
+    <TodoContext.Provider value={{ ...state, saveTodoList, setActiveList }}>
       {children}
     </TodoContext.Provider>
   );
