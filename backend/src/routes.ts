@@ -6,8 +6,11 @@ import { InvalidIdsError } from "./error";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.json(model.get());
+router.get("/", (req, res, next) => {
+  model
+    .get()
+    .then((collection) => res.json(collection))
+    .catch((err) => next(err));
 });
 
 const schema = Joi.object({

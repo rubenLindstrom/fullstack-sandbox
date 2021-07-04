@@ -1,7 +1,27 @@
 import { v4 as uuidv4 } from "uuid";
 import { NotFoundError } from "./error";
-
-const DB: { [key: string]: TodoList } = {};
+const DB: TodoCollection = {
+  "56f23724-652e-45b6-8061-20a93144fd16": {
+    _id: "56f23724-652e-45b6-8061-20a93144fd16",
+    name: "First List",
+    todos: [
+      {
+        _id: "a8e63f73-a0e9-40df-8364-0d04f447cb4e",
+        name: "First todo of first list!",
+      },
+    ],
+  },
+  "816306d6-a688-4b19-8d0d-3d31c35cc982": {
+    _id: "816306d6-a688-4b19-8d0d-3d31c35cc982",
+    name: "Second List",
+    todos: [
+      {
+        id: "f3450373-3c44-49a9-acfd-c56443e2163b",
+        name: "First todo of second list!",
+      },
+    ],
+  },
+};
 
 class Model {
   private async getList(listId: string): Promise<TodoList> {
@@ -29,8 +49,8 @@ class Model {
     return [list, item];
   }
 
-  async get(): Promise<TodoList[]> {
-    return Object.values(DB);
+  async get(): Promise<TodoCollection> {
+    return DB;
   }
 
   async addList(name: string): Promise<TodoList> {
