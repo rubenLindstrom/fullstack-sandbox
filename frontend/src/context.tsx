@@ -55,7 +55,7 @@ const TodoContext = React.createContext<State & Handlers>({
   ...initialHandlers,
 });
 
-const reducer = (state: State = initialState, action: Action) => {
+const reducer = (state: State = initialState, action: Action): State => {
   switch (action.type) {
     case ActionTypes.SET_TODOS:
       return {
@@ -69,7 +69,7 @@ const reducer = (state: State = initialState, action: Action) => {
         todoLists: {
           ...state.todoLists,
           [action.payload.listId]: {
-            ...(state.todoLists?.[action.payload.listId] || {}),
+            ...state.todoLists[action.payload.listId],
             todos: action.payload.items,
           },
         },
