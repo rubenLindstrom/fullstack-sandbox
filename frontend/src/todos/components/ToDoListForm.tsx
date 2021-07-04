@@ -19,6 +19,11 @@ const useStyles = makeStyles((theme) => ({
   card: {
     margin: "1rem",
   },
+  completedMarker: {
+    textTransform: "uppercase",
+    color: "darkgreen",
+    fontWeight: "bold",
+  },
   todoLine: {
     display: "flex",
     alignItems: "flex-end",
@@ -74,7 +79,12 @@ export const ToDoListForm: React.FC<Props> = ({ toDoList, saveToDoList }) => {
   return (
     <Card className={classes.card}>
       <CardContent>
-        <Typography component="h2">{toDoList.name}</Typography>
+        <Typography component="h2">
+          {toDoList.name}
+          {toDoList.todos.every((item) => item.completed) && (
+            <span className={classes.completedMarker}> - Completed</span>
+          )}
+        </Typography>
         <form onSubmit={handleSubmit} className={classes.form}>
           {todos.map((item, index) => (
             <div key={item._id} className={classes.todoLine}>
