@@ -28,6 +28,7 @@ const listSchema = Joi.object({
     Joi.object({
       _id: Joi.string().required(),
       name: Joi.string().min(1).required(),
+      completed: Joi.boolean().required(),
     })
   ),
 });

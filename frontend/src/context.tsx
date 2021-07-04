@@ -98,10 +98,6 @@ export const TodoContextProvider: React.FC = ({ children }) => {
     });
   }, []);
 
-  React.useEffect(() => {
-    console.log(state);
-  }, [state]);
-
   const saveTodoList = (listId: string, items: TodoItem[]) => {
     api.updateList(listId, { todos: items });
     dispatch({

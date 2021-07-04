@@ -8,6 +8,7 @@ const DB: TodoCollection = {
       {
         _id: "a8e63f73-a0e9-40df-8364-0d04f447cb4e",
         name: "First todo of first list!",
+        completed: true,
       },
     ],
   },
@@ -16,8 +17,9 @@ const DB: TodoCollection = {
     name: "Second List",
     todos: [
       {
-        id: "f3450373-3c44-49a9-acfd-c56443e2163b",
+        _id: "f3450373-3c44-49a9-acfd-c56443e2163b",
         name: "First todo of second list!",
+        completed: false,
       },
     ],
   },
@@ -83,6 +85,7 @@ class Model {
     const todoItem = {
       _id: uuidv4(),
       name: "",
+      completed: false,
     };
     DB[listId] = {
       ...list,
