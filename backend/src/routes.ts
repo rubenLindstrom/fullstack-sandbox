@@ -2,7 +2,7 @@ import express from "express";
 import Joi from "joi";
 import model from "./model";
 import { validate } from "./middleware";
-import { HttpException, NotFoundError } from "./error";
+import { InvalidIdsError } from "./error";
 
 const router = express.Router();
 
@@ -19,49 +19,68 @@ router.post("/", validate(schema), (req, res) => {
   res.status(201).json(todoList);
 });
 
+const listSchema = Joi.object({
+  name: Joi.string().min(1),
+  todos: Joi.array().items(
+    Joi.object({
+      _id: Joi.string().required(),
+      name: Joi.string().min(1).required(),
+    })
+  ),
+});
+router.patch("/:listId", validate(listSchema), (req, res, next) => {
+  const listId = req.params.listId;
+
+  if (!listId) {
+    return next(new InvalidIdsError());
+  }
+
+  model.updateList(listId, req.body).catch((err) => next(err));
+});
+
 router.post("/:listId/item", (req, res, next) => {
   const listId = req.params.listId;
 
   if (!listId) {
-    return next(new NotFoundError());
+    return next(new InvalidIdsError());
   }
 
-  try {
-    const todoItem = model.addItem(listId, req.body.name);
-    res.status(201).json(todoItem);
-  } catch (err) {
-    next(err);
-  }
+  model
+    .addItem(listId)
+    .then((todoItem) => {
+      res.status(201).json(todoItem);
+    })
+    .catch((err) => next(err));
 });
 
-router.patch("/:listId/:itemId", (req, res, next) => {
+router.patch("/:listId/:itemId", validate(schema), (req, res, next) => {
   const { listId, itemId } = req.params;
 
   if (!listId || !itemId) {
-    return next(new HttpException(400, "Invalid IDs supplied"));
+    return next(new InvalidIdsError());
   }
 
-  try {
-    model.updateItem(listId, itemId, req.body);
-    res.status(204).send();
-  } catch (err) {
-    next(err);
-  }
+  model
+    .updateItem(listId, itemId, req.body)
+    .then(() => {
+      res.status(204).send();
+    })
+    .catch((err) => next(err));
 });
 
 router.delete("/:listId/:itemId", (req, res, next) => {
   const { listId, itemId } = req.params;
 
   if (!listId || !itemId) {
-    return next(new HttpException(400, "Invalid IDs supplied"));
+    return next(new InvalidIdsError());
   }
 
-  try {
-    model.deleteItem(listId, itemId);
-    res.status(204).send();
-  } catch (err) {
-    next(err);
-  }
+  model
+    .deleteItem(listId, itemId)
+    .then(() => {
+      res.status(204).send();
+    })
+    .catch((err) => next(err));
 });
 
 export default router;

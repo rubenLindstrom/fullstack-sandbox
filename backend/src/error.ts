@@ -14,3 +14,9 @@ export class NotFoundError extends HttpException {
     super(404, "List or item not found");
   }
 }
+
+export class InvalidIdsError extends HttpException {
+  constructor() {
+    super(400, "Invalid IDs supplied");
+  }
+}
