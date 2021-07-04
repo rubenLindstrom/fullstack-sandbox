@@ -102,7 +102,8 @@ export const TodoContextProvider: React.FC = ({ children }) => {
     console.log(state);
   }, [state]);
 
-  const saveTodoList = (listId: string, items: TodoItem[]) =>
+  const saveTodoList = (listId: string, items: TodoItem[]) => {
+    api.updateList(listId, { todos: items });
     dispatch({
       type: ActionTypes.SAVE_LIST,
       payload: {
@@ -110,6 +111,7 @@ export const TodoContextProvider: React.FC = ({ children }) => {
         items,
       },
     });
+  };
 
   const setActiveList = (listId: string) =>
     dispatch({

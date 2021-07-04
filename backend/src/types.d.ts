@@ -8,3 +8,7 @@ type TodoList = {
   name: string;
   todos: Todo[];
 };
+
+type TodoCollection = {
+  [key: string]: TodoList;
+};
