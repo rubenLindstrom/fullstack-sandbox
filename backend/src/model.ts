@@ -8,6 +8,7 @@ const DB: TodoCollection = {
       {
         _id: "a8e63f73-a0e9-40df-8364-0d04f447cb4e",
         name: "First todo of first list!",
+        completed: true,
       },
     ],
   },
@@ -18,6 +19,7 @@ const DB: TodoCollection = {
       {
         id: "f3450373-3c44-49a9-acfd-c56443e2163b",
         name: "First todo of second list!",
+        completed: false,
       },
     ],
   },

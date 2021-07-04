@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import {
   TextField,
   Card,
@@ -7,18 +7,21 @@ import {
   CardActions,
   Button,
   Typography,
+  Checkbox,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import AddIcon from "@material-ui/icons/Add";
 import { v4 as uuidv4 } from "uuid";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   card: {
     margin: "1rem",
   },
   todoLine: {
     display: "flex",
-    alignItems: "center",
+    alignItems: "flex-end",
   },
   textField: {
     flexGrow: 1,
@@ -31,7 +34,15 @@ const useStyles = makeStyles({
     flexDirection: "column",
     flexGrow: 1,
   },
-});
+  checkbox: {
+    width: 16,
+    height: 16,
+    color: theme.palette.primary.main,
+    "&:checked": {
+      color: theme.palette.primary.main,
+    },
+  },
+}));
 
 type Props = {
   toDoList: TodoList;
@@ -47,6 +58,19 @@ export const ToDoListForm: React.FC<Props> = ({ toDoList, saveToDoList }) => {
     saveToDoList(toDoList._id, todos);
   };
 
+  const toggleItemCompletion = (itemId: string, completed: boolean) => {
+    setTodos((prevTodos) =>
+      prevTodos.map((item) =>
+        item._id === itemId
+          ? {
+              ...item,
+              completed,
+            }
+          : item
+      )
+    );
+  };
+
   return (
     <Card className={classes.card}>
       <CardContent>
@@ -54,9 +78,18 @@ export const ToDoListForm: React.FC<Props> = ({ toDoList, saveToDoList }) => {
         <form onSubmit={handleSubmit} className={classes.form}>
           {todos.map((item, index) => (
             <div key={item._id} className={classes.todoLine}>
-              <Typography className={classes.standardSpace} variant="h6">
-                {index + 1}
-              </Typography>
+              <div>
+                <Checkbox
+                  onChange={(e) =>
+                    toggleItemCompletion(item._id, e.target.checked)
+                  }
+                  value={item.completed}
+                  icon={<CheckCircleOutlineIcon />}
+                  checkedIcon={<CheckCircleIcon />}
+                  className={classes.checkbox}
+                  color="default"
+                />
+              </div>
               <TextField
                 label="What to do?"
                 value={item.name}
@@ -99,6 +132,7 @@ export const ToDoListForm: React.FC<Props> = ({ toDoList, saveToDoList }) => {
                   {
                     _id: uuidv4(),
                     name: "",
+                    completed: false,
                   },
                 ]);
               }}
