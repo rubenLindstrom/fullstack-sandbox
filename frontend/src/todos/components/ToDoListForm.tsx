@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Card,
@@ -32,14 +32,29 @@ type Props = {
   saveToDoList: Function;
 };
 
+// TODO: Can we type the args of the cb?
+const debounce = <T,>(cb: Function, delay: number) => {
+  let timeout: NodeJS.Timeout | null;
+  return (...args: any) => {
+    const later = () => {
+      timeout = null;
+      cb.apply(null, args);
+    };
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(later, delay);
+  };
+};
+
+// TODO: Don't trigger the side effect on initial render, since todo hasn't changed
 export const ToDoListForm: React.FC<Props> = ({ toDoList, saveToDoList }) => {
   const classes = useStyles();
-  const [todos, setTodos] = useState<TodoItem[]>(toDoList.todos);
+  const [todos, setTodos] = React.useState<TodoItem[]>(toDoList.todos);
 
-  const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    saveToDoList(toDoList._id, todos);
-  };
+  const debouncedSave = React.useCallback(debounce(saveToDoList, 500), []);
+
+  React.useEffect(() => {
+    debouncedSave(toDoList._id, todos);
+  }, [todos]);
 
   const handleItemTextChange =
     (itemId: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,7 +103,7 @@ export const ToDoListForm: React.FC<Props> = ({ toDoList, saveToDoList }) => {
             <span className={classes.completedMarker}> - Completed</span>
           )}
         </Typography>
-        <form onSubmit={handleSubmit} className={classes.form}>
+        <form className={classes.form}>
           {todos.map((item) => (
             <TodoItem
               key={item._id}
@@ -116,9 +131,6 @@ export const ToDoListForm: React.FC<Props> = ({ toDoList, saveToDoList }) => {
               }}
             >
               Add Todo <AddIcon />
-            </Button>
-            <Button type="submit" variant="contained" color="primary">
-              Save
             </Button>
           </CardActions>
         </form>
