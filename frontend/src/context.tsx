@@ -1,5 +1,5 @@
-import React from "react";
-import api from "./api";
+import React from 'react';
+import api from './api';
 
 type State = {
   todoLists: TodoCollection;
@@ -13,9 +13,9 @@ type Handlers = {
 };
 
 enum ActionTypes {
-  SET_TODOS = "SET_TODOS",
-  SAVE_LIST = "SAVE_LIST",
-  SELECT_LIST = "SELECT_LIST",
+  SET_TODOS = 'SET_TODOS',
+  SAVE_LIST = 'SAVE_LIST',
+  SELECT_LIST = 'SELECT_LIST',
 }
 
 type Action =
@@ -41,7 +41,7 @@ type Action =
 
 const initialState: State = {
   todoLists: {},
-  activeListId: "",
+  activeListId: '',
   loading: true,
 };
 
