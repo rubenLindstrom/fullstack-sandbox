@@ -1,25 +1,27 @@
-import { v4 as uuidv4 } from "uuid";
-import { NotFoundError } from "./error";
+import { v4 as uuidv4 } from 'uuid';
+import { NotFoundError } from './error';
 const DB: TodoCollection = {
-  "56f23724-652e-45b6-8061-20a93144fd16": {
-    _id: "56f23724-652e-45b6-8061-20a93144fd16",
-    name: "First List",
+  '56f23724-652e-45b6-8061-20a93144fd16': {
+    _id: '56f23724-652e-45b6-8061-20a93144fd16',
+    name: 'First List',
     todos: [
       {
-        _id: "a8e63f73-a0e9-40df-8364-0d04f447cb4e",
-        name: "First todo of first list!",
+        _id: 'a8e63f73-a0e9-40df-8364-0d04f447cb4e',
+        name: 'First todo of first list!',
         completed: true,
+        dueDate: null,
       },
     ],
   },
-  "816306d6-a688-4b19-8d0d-3d31c35cc982": {
-    _id: "816306d6-a688-4b19-8d0d-3d31c35cc982",
-    name: "Second List",
+  '816306d6-a688-4b19-8d0d-3d31c35cc982': {
+    _id: '816306d6-a688-4b19-8d0d-3d31c35cc982',
+    name: 'Second List',
     todos: [
       {
-        _id: "f3450373-3c44-49a9-acfd-c56443e2163b",
-        name: "First todo of second list!",
+        _id: 'f3450373-3c44-49a9-acfd-c56443e2163b',
+        name: 'First todo of second list!',
         completed: false,
+        dueDate: null,
       },
     ],
   },
@@ -67,9 +69,11 @@ class Model {
 
   async updateList(
     listId: string,
-    newList: Partial<Omit<TodoList, "_id">>
+    newList: Partial<Omit<TodoList, '_id'>>
   ): Promise<TodoList> {
     const list = await this.getList(listId);
+
+    console.log({ newList, todo: newList.todos });
 
     DB[listId] = {
       ...list,
@@ -84,8 +88,9 @@ class Model {
 
     const todoItem = {
       _id: uuidv4(),
-      name: "",
+      name: '',
       completed: false,
+      dueDate: null,
     };
     DB[listId] = {
       ...list,
@@ -97,7 +102,7 @@ class Model {
   async updateItem(
     listId: string,
     itemId: string,
-    newItem: Partial<Omit<TodoItem, "_id">>
+    newItem: Partial<Omit<TodoItem, '_id'>>
   ) {
     const [list] = await this.getListAndItem(listId, itemId);
 

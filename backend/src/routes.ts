@@ -1,12 +1,12 @@
-import express from "express";
-import Joi from "joi";
-import model from "./model";
-import { validate } from "./middleware";
-import { InvalidIdsError } from "./error";
+import express from 'express';
+import Joi from 'joi';
+import model from './model';
+import { validate } from './middleware';
+import { InvalidIdsError } from './error';
 
 const router = express.Router();
 
-router.get("/", (req, res, next) => {
+router.get('/', (req, res, next) => {
   model
     .get()
     .then((collection) => res.json(collection))
@@ -17,7 +17,7 @@ const schema = Joi.object({
   name: Joi.string().min(1).required(),
 });
 
-router.post("/", validate(schema), (req, res) => {
+router.post('/', validate(schema), (req, res) => {
   const todoList = model.addList(req.body.name);
   res.status(201).json(todoList);
 });
@@ -29,10 +29,11 @@ const listSchema = Joi.object({
       _id: Joi.string().required(),
       name: Joi.string().min(1).required(),
       completed: Joi.boolean().required(),
+      dueDate: Joi.date().allow(null),
     })
   ),
 });
-router.patch("/:listId", validate(listSchema), (req, res, next) => {
+router.patch('/:listId', validate(listSchema), (req, res, next) => {
   const listId = req.params.listId;
 
   if (!listId) {
@@ -42,7 +43,7 @@ router.patch("/:listId", validate(listSchema), (req, res, next) => {
   model.updateList(listId, req.body).catch((err) => next(err));
 });
 
-router.post("/:listId/item", (req, res, next) => {
+router.post('/:listId/item', (req, res, next) => {
   const listId = req.params.listId;
 
   if (!listId) {
@@ -57,7 +58,7 @@ router.post("/:listId/item", (req, res, next) => {
     .catch((err) => next(err));
 });
 
-router.patch("/:listId/:itemId", validate(schema), (req, res, next) => {
+router.patch('/:listId/:itemId', validate(schema), (req, res, next) => {
   const { listId, itemId } = req.params;
 
   if (!listId || !itemId) {
@@ -72,7 +73,7 @@ router.patch("/:listId/:itemId", validate(schema), (req, res, next) => {
     .catch((err) => next(err));
 });
 
-router.delete("/:listId/:itemId", (req, res, next) => {
+router.delete('/:listId/:itemId', (req, res, next) => {
   const { listId, itemId } = req.params;
 
   if (!listId || !itemId) {

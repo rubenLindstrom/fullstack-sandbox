@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
-import Joi from "joi";
-import { HttpException } from "./error";
+import { Request, Response } from 'express';
+import Joi from 'joi';
+import { HttpException } from './error';
 
 const errorHandler = (
   error: HttpException,

@@ -1,14 +1,14 @@
-import React, { Fragment } from "react";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ReceiptIcon from "@material-ui/icons/Receipt";
-import Typography from "@material-ui/core/Typography";
-import { ToDoListForm } from "./ToDoListForm";
-import TodoContext from "../../context";
+import React, { Fragment } from 'react';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ReceiptIcon from '@material-ui/icons/Receipt';
+import Typography from '@material-ui/core/Typography';
+import { ToDoListForm } from './ToDoListForm';
+import TodoContext from '../../context';
 
 export const ToDoLists: React.FC<{ style: any }> = ({ style }) => {
   const { todoLists, activeListId, loading, saveTodoList, setActiveList } =
@@ -45,14 +45,14 @@ export const ToDoLists: React.FC<{ style: any }> = ({ style }) => {
                     <ListItemIcon>
                       <ReceiptIcon
                         {...(listCompleted
-                          ? { style: { color: "green" } }
+                          ? { style: { color: 'green' } }
                           : {})}
                       />
                     </ListItemIcon>
                     <ListItemText
                       primary={list.name}
                       {...(listCompleted
-                        ? { style: { textDecoration: "line-through" } }
+                        ? { style: { textDecoration: 'line-through' } }
                         : {})}
                     />
                   </ListItem>

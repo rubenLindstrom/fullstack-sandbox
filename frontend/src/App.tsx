@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import "./App.css";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import { ToDoLists } from "./todos/components/ToDoLists";
+import React, { Component } from 'react';
+import './App.css';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+import { ToDoLists } from './todos/components/ToDoLists';
 
 const MainAppBar = () => {
   return (
@@ -20,17 +20,17 @@ const MainAppBar = () => {
 
 const useStyles = makeStyles({
   mainWrapperStyle: {
-    display: "flex",
-    flexDirection: "column",
+    display: 'flex',
+    flexDirection: 'column',
   },
   centerContentWrapper: {
-    display: "flex",
-    justifyContent: "center",
+    display: 'flex',
+    justifyContent: 'center',
   },
   contentWrapperStyle: {
-    display: "flex",
-    flexDirection: "column",
-    maxWidth: "80rem",
+    display: 'flex',
+    flexDirection: 'column',
+    maxWidth: '80rem',
     flexGrow: 1,
   },
 });
@@ -51,7 +51,7 @@ class App extends Component {
   render() {
     return (
       <MainWrapper>
-        <ToDoLists style={{ margin: "1rem" }} />
+        <ToDoLists style={{ margin: '1rem' }} />
       </MainWrapper>
     );
   }
