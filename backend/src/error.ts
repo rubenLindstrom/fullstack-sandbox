@@ -11,12 +11,12 @@ export class HttpException extends Error {
 
 export class NotFoundError extends HttpException {
   constructor() {
-    super(404, "List or item not found");
+    super(404, 'List or item not found');
   }
 }
 
 export class InvalidIdsError extends HttpException {
   constructor() {
-    super(400, "Invalid IDs supplied");
+    super(400, 'Invalid IDs supplied');
   }
 }

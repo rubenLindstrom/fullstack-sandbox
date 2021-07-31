@@ -1,127 +1,127 @@
-import { v4 as uuidv4 } from "uuid";
-import { NotFoundError } from "./error";
+import { v4 as uuidv4 } from 'uuid';
+import { NotFoundError } from './error';
 const DB: TodoCollection = {
-	"56f23724-652e-45b6-8061-20a93144fd16": {
-		_id: "56f23724-652e-45b6-8061-20a93144fd16",
-		name: "First List",
-		todos: [
-			{
-				_id: "a8e63f73-a0e9-40df-8364-0d04f447cb4e",
-				name: "First todo of first list!",
-				completed: true,
-				dueDate: null
-			}
-		]
-	},
-	"816306d6-a688-4b19-8d0d-3d31c35cc982": {
-		_id: "816306d6-a688-4b19-8d0d-3d31c35cc982",
-		name: "Second List",
-		todos: [
-			{
-				_id: "f3450373-3c44-49a9-acfd-c56443e2163b",
-				name: "First todo of second list!",
-				completed: false,
-				dueDate: null
-			}
-		]
-	}
+  '56f23724-652e-45b6-8061-20a93144fd16': {
+    _id: '56f23724-652e-45b6-8061-20a93144fd16',
+    name: 'First List',
+    todos: [
+      {
+        _id: 'a8e63f73-a0e9-40df-8364-0d04f447cb4e',
+        name: 'First todo of first list!',
+        completed: true,
+        dueDate: null,
+      },
+    ],
+  },
+  '816306d6-a688-4b19-8d0d-3d31c35cc982': {
+    _id: '816306d6-a688-4b19-8d0d-3d31c35cc982',
+    name: 'Second List',
+    todos: [
+      {
+        _id: 'f3450373-3c44-49a9-acfd-c56443e2163b',
+        name: 'First todo of second list!',
+        completed: false,
+        dueDate: null,
+      },
+    ],
+  },
 };
 
 class Model {
-	private async getList(listId: string): Promise<TodoList> {
-		const list = DB[listId];
+  private async getList(listId: string): Promise<TodoList> {
+    const list = DB[listId];
 
-		if (!list) {
-			throw new NotFoundError();
-		}
+    if (!list) {
+      throw new NotFoundError();
+    }
 
-		return list;
-	}
+    return list;
+  }
 
-	private async getListAndItem(
-		listId: string,
-		itemId: string
-	): Promise<[TodoList, TodoItem]> {
-		const list = await this.getList(listId);
+  private async getListAndItem(
+    listId: string,
+    itemId: string
+  ): Promise<[TodoList, TodoItem]> {
+    const list = await this.getList(listId);
 
-		const item = list?.todos.find((item) => item._id === itemId);
+    const item = list?.todos.find((item) => item._id === itemId);
 
-		if (!item) {
-			throw new NotFoundError();
-		}
+    if (!item) {
+      throw new NotFoundError();
+    }
 
-		return [list, item];
-	}
+    return [list, item];
+  }
 
-	async get(): Promise<TodoCollection> {
-		return DB;
-	}
+  async get(): Promise<TodoCollection> {
+    return DB;
+  }
 
-	async addList(name: string): Promise<TodoList> {
-		const list = {
-			_id: uuidv4(),
-			name,
-			todos: []
-		};
-		DB[list._id] = list;
-		return list;
-	}
+  async addList(name: string): Promise<TodoList> {
+    const list = {
+      _id: uuidv4(),
+      name,
+      todos: [],
+    };
+    DB[list._id] = list;
+    return list;
+  }
 
-	async updateList(
-		listId: string,
-		newList: Partial<Omit<TodoList, "_id">>
-	): Promise<TodoList> {
-		const list = await this.getList(listId);
+  async updateList(
+    listId: string,
+    newList: Partial<Omit<TodoList, '_id'>>
+  ): Promise<TodoList> {
+    const list = await this.getList(listId);
 
-		console.log({ newList, todo: newList.todos });
+    console.log({ newList, todo: newList.todos });
 
-		DB[listId] = {
-			...list,
-			...newList
-		};
+    DB[listId] = {
+      ...list,
+      ...newList,
+    };
 
-		return DB[listId];
-	}
+    return DB[listId];
+  }
 
-	async addItem(listId: string): Promise<TodoItem> {
-		const list = await this.getList(listId);
+  async addItem(listId: string): Promise<TodoItem> {
+    const list = await this.getList(listId);
 
-		const todoItem = {
-			_id: uuidv4(),
-			name: "",
-			completed: false,
-			dueDate: null
-		};
-		DB[listId] = {
-			...list,
-			todos: [...list.todos, todoItem]
-		};
-		return todoItem;
-	}
+    const todoItem = {
+      _id: uuidv4(),
+      name: '',
+      completed: false,
+      dueDate: null,
+    };
+    DB[listId] = {
+      ...list,
+      todos: [...list.todos, todoItem],
+    };
+    return todoItem;
+  }
 
-	async updateItem(
-		listId: string,
-		itemId: string,
-		newItem: Partial<Omit<TodoItem, "_id">>
-	) {
-		const [list] = await this.getListAndItem(listId, itemId);
+  async updateItem(
+    listId: string,
+    itemId: string,
+    newItem: Partial<Omit<TodoItem, '_id'>>
+  ) {
+    const [list] = await this.getListAndItem(listId, itemId);
 
-		DB[listId] = {
-			...list,
-			todos: list.todos.map((item) =>
-				item._id === itemId ? { ...item, ...newItem } : item
-			)
-		};
-	}
+    DB[listId] = {
+      ...list,
+      todos: list.todos.map((item) =>
+        item._id === itemId ? { ...item, ...newItem } : item
+      ),
+    };
+  }
 
-	async deleteItem(listId: string, itemId: string) {
-		const [list] = await this.getListAndItem(listId, itemId);
+  async deleteItem(listId: string, itemId: string) {
+    const [list] = await this.getListAndItem(listId, itemId);
 
-		DB[listId] = {
-			...list,
-			todos: list.todos.filter((todo) => todo._id !== itemId)
-		};
-	}
+    DB[listId] = {
+      ...list,
+      todos: list.todos.filter((todo) => todo._id !== itemId),
+    };
+  }
 }
 
 const model = new Model();
