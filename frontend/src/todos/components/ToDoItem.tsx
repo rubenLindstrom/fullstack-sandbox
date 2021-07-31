@@ -1,9 +1,15 @@
 import React from "react";
 import { TextField, Button, Checkbox, Theme } from "@material-ui/core";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
+
+import DateFnsUtils from "@date-io/date-fns";
+import {
+	MuiPickersUtilsProvider,
+	KeyboardDatePicker
+} from "@material-ui/pickers";
 
 const useStyles = makeStyles((theme: Theme) => ({
 	todoLine: {
@@ -23,6 +29,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 	standardSpace: {
 		margin: "8px"
+	},
+	datePicker: {
+		marginBottom: 0,
+		marginLeft: "16px",
+		width: "140px"
 	}
 }));
 
@@ -40,24 +51,37 @@ const ToDoItem: React.FC<Props> = ({
 	onDelete
 }) => {
 	const classes = useStyles();
+	const [date, setDate] = React.useState<Date | null>(new Date());
 	return (
 		<div key={item._id} className={classes.todoLine}>
-			<div>
-				<Checkbox
-					onChange={onToggleCompletion}
-					checked={item.completed}
-					icon={<CheckCircleOutlineIcon />}
-					checkedIcon={<CheckCircleIcon />}
-					className={classes.checkbox}
-					color="default"
-				/>
-			</div>
+			<Checkbox
+				onChange={onToggleCompletion}
+				checked={item.completed}
+				icon={<CheckCircleOutlineIcon />}
+				checkedIcon={<CheckCircleIcon />}
+				className={classes.checkbox}
+				color="default"
+			/>
 			<TextField
 				label="What to do?"
 				value={item.name}
 				onChange={onTextChange}
 				className={classes.textField}
 			/>
+			<MuiPickersUtilsProvider utils={DateFnsUtils}>
+				<KeyboardDatePicker
+					margin="normal"
+					id="date-picker-dialog"
+					label="Due Date"
+					format="dd/MM/yyyy"
+					value={date}
+					onChange={(value) => setDate(value)}
+					KeyboardButtonProps={{
+						"aria-label": "change date"
+					}}
+					className={classes.datePicker}
+				/>
+			</MuiPickersUtilsProvider>
 			<Button
 				size="small"
 				color="secondary"
