@@ -70,7 +70,6 @@ export const ToDoListForm: React.FC<Props> = ({ toDoList, saveToDoList }) => {
 			);
 
 	const handleDueDateChange = (itemId: string) => (date: Date | null) =>
-		date &&
 		setTodos((prevTodos) =>
 			prevTodos.map((todo) =>
 				todo._id === itemId ? { ...todo, dueDate: date } : todo
@@ -110,7 +109,8 @@ export const ToDoListForm: React.FC<Props> = ({ toDoList, saveToDoList }) => {
 									{
 										_id: uuidv4(),
 										name: "",
-										completed: false
+										completed: false,
+										dueDate: null
 									}
 								]);
 							}}

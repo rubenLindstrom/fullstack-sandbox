@@ -2,7 +2,7 @@ type TodoItem = {
 	_id: string;
 	name: string;
 	completed: boolean;
-	dueDate?: Date;
+	dueDate: Date | null;
 };
 
 type TodoList = {
