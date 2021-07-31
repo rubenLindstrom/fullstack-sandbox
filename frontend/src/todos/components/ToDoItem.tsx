@@ -41,6 +41,7 @@ type Props = {
 	item: TodoItem;
 	onToggleCompletion: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	onTextChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	onDueDateChange: (date: Date | null) => void;
 	onDelete: () => void;
 };
 
@@ -48,10 +49,10 @@ const ToDoItem: React.FC<Props> = ({
 	item,
 	onToggleCompletion,
 	onTextChange,
+	onDueDateChange,
 	onDelete
 }) => {
 	const classes = useStyles();
-	const [date, setDate] = React.useState<Date | null>(new Date());
 	return (
 		<div key={item._id} className={classes.todoLine}>
 			<Checkbox
@@ -74,8 +75,8 @@ const ToDoItem: React.FC<Props> = ({
 					id="date-picker-dialog"
 					label="Due Date"
 					format="dd/MM/yyyy"
-					value={date}
-					onChange={(value) => setDate(value)}
+					value={item.dueDate ?? null}
+					onChange={(date) => onDueDateChange(date)}
 					KeyboardButtonProps={{
 						"aria-label": "change date"
 					}}

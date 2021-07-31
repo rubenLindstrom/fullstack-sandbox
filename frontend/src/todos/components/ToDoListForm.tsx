@@ -43,12 +43,13 @@ export const ToDoListForm: React.FC<Props> = ({ toDoList, saveToDoList }) => {
 
 	const handleItemTextChange =
 		(itemId: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+			const name = event.target.value;
 			setTodos((prevTodos) =>
 				prevTodos.map((todo) =>
 					todo._id === itemId
 						? {
 								...todo,
-								name: event.target.value
+								name
 						  }
 						: todo
 				)
@@ -56,7 +57,7 @@ export const ToDoListForm: React.FC<Props> = ({ toDoList, saveToDoList }) => {
 		};
 
 	const handleItemToggleCompletion =
-		(itemId: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+		(itemId: string) => (event: React.ChangeEvent<HTMLInputElement>) =>
 			setTodos((prevTodos) =>
 				prevTodos.map((item) =>
 					item._id === itemId
@@ -67,11 +68,17 @@ export const ToDoListForm: React.FC<Props> = ({ toDoList, saveToDoList }) => {
 						: item
 				)
 			);
-		};
 
-	const handleItemDelete = (itemId: string) => () => {
+	const handleDueDateChange = (itemId: string) => (date: Date | null) =>
+		date &&
+		setTodos((prevTodos) =>
+			prevTodos.map((todo) =>
+				todo._id === itemId ? { ...todo, dueDate: date } : todo
+			)
+		);
+
+	const handleItemDelete = (itemId: string) => () =>
 		setTodos((prevTodos) => prevTodos.filter((todo) => todo._id !== itemId));
-	};
 
 	return (
 		<Card className={classes.card}>
@@ -89,6 +96,7 @@ export const ToDoListForm: React.FC<Props> = ({ toDoList, saveToDoList }) => {
 							item={item}
 							onToggleCompletion={handleItemToggleCompletion(item._id)}
 							onTextChange={handleItemTextChange(item._id)}
+							onDueDateChange={handleDueDateChange(item._id)}
 							onDelete={handleItemDelete(item._id)}
 						/>
 					))}
