@@ -1,9 +1,16 @@
 import React from "react";
-import { TextField, Button, Checkbox, Theme } from "@material-ui/core";
+import {
+	TextField,
+	Button,
+	Checkbox,
+	Theme,
+	Typography
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
+import moment from "moment";
 
 import DateFnsUtils from "@date-io/date-fns";
 import {
@@ -12,6 +19,9 @@ import {
 } from "@material-ui/pickers";
 
 const useStyles = makeStyles((theme: Theme) => ({
+	todoContainer: {
+		marginBottom: "12px"
+	},
 	todoLine: {
 		display: "flex",
 		alignItems: "flex-end"
@@ -34,8 +44,17 @@ const useStyles = makeStyles((theme: Theme) => ({
 		marginBottom: 0,
 		marginLeft: "16px",
 		width: "140px"
+	},
+	dueDateIndicator: {
+		margin: "6px 0 0 33px"
 	}
 }));
+
+enum TimeDelta {
+	PAST,
+	NOW,
+	FUTURE
+}
 
 type Props = {
 	item: TodoItem;
@@ -53,44 +72,83 @@ const ToDoItem: React.FC<Props> = ({
 	onDelete
 }) => {
 	const classes = useStyles();
+
+	const getDueDateTimeDelta = (dueDate: Date): TimeDelta => {
+		const today = new Date().toISOString().substring(0, 10);
+		const dueDateDay = new Date(dueDate).toISOString().substring(0, 10);
+
+		if (today === dueDateDay) return TimeDelta.NOW;
+		else if (today < dueDateDay) return TimeDelta.FUTURE;
+		else return TimeDelta.PAST;
+	};
+
+	const renderTimeDifference = (dueDate: Date) => {
+		const timeDiff = getDueDateTimeDelta(dueDate);
+		switch (timeDiff) {
+			case TimeDelta.NOW:
+				return "Due today";
+			case TimeDelta.PAST:
+			case TimeDelta.FUTURE:
+				return `Due ${moment(dueDate).fromNow()}`;
+		}
+	};
+
+	const timeDeltaToStyles = {
+		[TimeDelta.NOW]: "#f1c40f",
+		[TimeDelta.FUTURE]: "#27ae60",
+		[TimeDelta.PAST]: "#c0392b"
+	};
+
 	return (
-		<div key={item._id} className={classes.todoLine}>
-			<Checkbox
-				onChange={onToggleCompletion}
-				checked={item.completed}
-				icon={<CheckCircleOutlineIcon />}
-				checkedIcon={<CheckCircleIcon />}
-				className={classes.checkbox}
-				color="default"
-			/>
-			<TextField
-				label="What to do?"
-				value={item.name}
-				onChange={onTextChange}
-				className={classes.textField}
-			/>
-			<MuiPickersUtilsProvider utils={DateFnsUtils}>
-				<KeyboardDatePicker
-					margin="normal"
-					id="date-picker-dialog"
-					label="Due Date"
-					format="dd/MM/yyyy"
-					value={item.dueDate ?? null}
-					onChange={(date) => onDueDateChange(date)}
-					KeyboardButtonProps={{
-						"aria-label": "change date"
-					}}
-					className={classes.datePicker}
+		<div className={classes.todoContainer}>
+			<div key={item._id} className={classes.todoLine}>
+				<Checkbox
+					onChange={onToggleCompletion}
+					checked={item.completed}
+					icon={<CheckCircleOutlineIcon />}
+					checkedIcon={<CheckCircleIcon />}
+					className={classes.checkbox}
+					color="default"
 				/>
-			</MuiPickersUtilsProvider>
-			<Button
-				size="small"
-				color="secondary"
-				className={classes.standardSpace}
-				onClick={() => onDelete()}
-			>
-				<DeleteIcon />
-			</Button>
+				<TextField
+					label="What to do?"
+					value={item.name}
+					onChange={onTextChange}
+					className={classes.textField}
+				/>
+				<MuiPickersUtilsProvider utils={DateFnsUtils}>
+					<KeyboardDatePicker
+						margin="normal"
+						id="date-picker-dialog"
+						label="Due Date"
+						format="dd/MM/yyyy"
+						value={item.dueDate ?? null}
+						onChange={(date) => onDueDateChange(date)}
+						KeyboardButtonProps={{
+							"aria-label": "change date"
+						}}
+						className={classes.datePicker}
+					/>
+				</MuiPickersUtilsProvider>
+				<Button
+					size="small"
+					color="secondary"
+					className={classes.standardSpace}
+					onClick={() => onDelete()}
+				>
+					<DeleteIcon />
+				</Button>
+			</div>
+			{item.dueDate && (
+				<Typography
+					className={classes.dueDateIndicator}
+					style={{
+						color: timeDeltaToStyles[getDueDateTimeDelta(item.dueDate)]
+					}}
+				>
+					{renderTimeDifference(item.dueDate)}
+				</Typography>
+			)}
 		</div>
 	);
 };
