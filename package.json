@@ -1,0 +1,19 @@
+{
+	"name": "fullstack-sandbox",
+	"version": "1.0.0",
+	"description": "Welcome to the Sellpy Sandbox environment for fullstack development!",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "concurrently \"cd frontend && npm start\" \"cd backend && npm run dev\""
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/rubenLindstrom/fullstack-sandbox.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/rubenLindstrom/fullstack-sandbox/issues"
+	},
+	"homepage": "https://github.com/rubenLindstrom/fullstack-sandbox#readme"
+}
