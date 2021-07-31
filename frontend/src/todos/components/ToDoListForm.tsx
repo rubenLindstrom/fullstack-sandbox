@@ -11,7 +11,7 @@ import AddIcon from "@material-ui/icons/Add";
 import { v4 as uuidv4 } from "uuid";
 import TodoItem from "./ToDoItem";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
 	card: {
 		margin: "1rem"
 	},
